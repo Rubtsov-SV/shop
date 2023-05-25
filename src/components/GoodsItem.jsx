@@ -1,5 +1,12 @@
 function GoodsItem(props) {
-  const { mainId, displayName, displayDescription, price, displayAssets, addToBasket = Function.prototype } = props;
+  const { 
+    mainId, 
+    displayName, 
+    displayDescription, 
+    price, 
+    displayAssets, 
+    addToBasket = Function.prototype 
+  } = props;
 
   return (
     <div className="card">

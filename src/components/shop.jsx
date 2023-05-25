@@ -3,6 +3,7 @@ import {API_KEY, API_URL} from '../config'
 import {Preloader} from './Preloader'
 import {GoodsList} from './GoodsList'
 import {Cart} from './Cart'
+import {BasketList} from './BasketList.jsx'
 
 
 function Shop() {
@@ -35,6 +36,45 @@ function Shop() {
         }
     }
 
+    const handleBasketShow = () => {
+        setIsBasketShow(!isBasketShow)
+    }
+
+    const incQuantity = (itemId) => {
+        const newOrder = order.map(el => {
+            if(el.mainId === itemId) {
+                const newQuatity = el.quantity + 1 
+                return {
+                    ...el,
+                    quantity: newQuatity,
+                }
+            } else {
+                return el
+            }
+        } )
+        SetOrder(newOrder);
+    }
+
+    const removeFromBasket = (itemId) => {
+        const newOrder = order.filter(el => el.mainId !== itemId)
+        SetOrder(newOrder)
+    }
+
+    const decQuantity = (itemId) => {
+        const newOrder = order.map(el => {
+            if(el.mainId === itemId) {
+                const newQuatity = el.quantity - 1 
+                return {
+                    ...el,
+                    quantity: newQuatity >= 0 ? newQuatity : 0,
+                }
+            } else {
+                return el
+            }
+        } )
+        SetOrder(newOrder);
+    }
+
     useEffect(function getGoods () {
         fetch(API_URL, {
             headers: {
@@ -50,9 +90,15 @@ function Shop() {
     }, [])
 
     return <main className="container content">
-        <Cart quantity = {order.length}/>
+        <Cart quantity = {order.length} handleBasketShow = {handleBasketShow}/>
         {
             loading ? <Preloader /> : <GoodsList goods={goods} addToBasket={addToBasket}/>
+        }
+        {
+            isBasketShow && <BasketList order={order} handleBasketShow={handleBasketShow} removeFromBasket={removeFromBasket}
+            decQuantity={decQuantity}
+            incQuantity={incQuantity}
+            />
         }
     </main>
 }
