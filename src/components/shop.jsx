@@ -4,6 +4,7 @@ import {Preloader} from './Preloader'
 import {GoodsList} from './GoodsList'
 import {Cart} from './Cart'
 import {BasketList} from './BasketList.jsx'
+import { Alert } from './Alert.jsx'
 
 
 function Shop() {
@@ -11,6 +12,7 @@ function Shop() {
     const [loading, setLoading] = useState(true);
     const [order, SetOrder] = useState([]);
     const [isBasketShow, setIsBasketShow] = useState(false)
+    const [alertName, setAlertName] = useState('')
 
 
     const addToBasket = (item) => {
@@ -34,6 +36,7 @@ function Shop() {
             })
             SetOrder(newOrder)
         }
+        setAlertName(item.displayName)
     }
 
     const handleBasketShow = () => {
@@ -75,6 +78,10 @@ function Shop() {
         SetOrder(newOrder);
     }
 
+    const closeAlert = () => {
+        setAlertName('')
+    }
+
     useEffect(function getGoods () {
         fetch(API_URL, {
             headers: {
@@ -95,10 +102,13 @@ function Shop() {
             loading ? <Preloader /> : <GoodsList goods={goods} addToBasket={addToBasket}/>
         }
         {
-            isBasketShow && <BasketList order={order} handleBasketShow={handleBasketShow} removeFromBasket={removeFromBasket}
+            isBasketShow && (<BasketList order={order} handleBasketShow={handleBasketShow} removeFromBasket={removeFromBasket}
             decQuantity={decQuantity}
             incQuantity={incQuantity}
             />
+        )}
+        {
+            alertName && <Alert displayName ={alertName} closeAlert={closeAlert}/>
         }
     </main>
 }
